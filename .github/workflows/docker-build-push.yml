@@ -32,7 +32,7 @@ jobs:
         context: .
         push: true
         tags: |  
-          phxdev1/smithery-runner:latest
-          phxdev1/smithery-runner:${{ github.sha }}
+          magickai/smithery-runner:latest
+          magickai/smithery-runner:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
