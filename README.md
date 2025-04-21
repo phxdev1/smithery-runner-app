@@ -84,10 +84,17 @@ This repository uses GitHub Actions to automatically build and push a Docker ima
 To set up GitHub Actions for your fork:
 
 1. Fork this repository
-2. Go to your fork's Settings > Secrets and Variables > Actions
-3. Add the following secrets:
+2. Go to your fork's Settings > Environments
+3. Click "New environment" and name it "production"
+4. Click "Configure environment"
+5. Under "Environment secrets", add the following secrets:
    - `DOCKER_HUB_USERNAME`: Your Docker Hub username
    - `DOCKER_HUB_ACCESS_TOKEN`: Your Docker Hub access token
+
+To get a Docker Hub access token:
+1. Log in to Docker Hub
+2. Go to Account Settings > Security
+3. Create a new access token with appropriate permissions (Read & Write)
 
 ## Technologies Used
 
