@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smithery Runner</title>
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8">
+      <div class="flex items-center space-x-3">
+        <div class="bg-primary-600 text-white p-2 rounded-lg">
+          <i data-feather="code" class="w-6 h-6"></i>
+        </div>
+        <h1 class="text-2xl font-bold">Smithery Runner</h1>
+      </div>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-dark-700">
+        <i data-feather="moon" id="dark-icon" class="w-5 h-5 hidden"></i>
+        <i data-feather="sun" id="light-icon" class="w-5 h-5"></i>
+      </button>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Command Panel -->
+      <div class="lg:col-span-1 card p-6 animate-fade-in">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+          <i data-feather="terminal" class="w-5 h-5 mr-2 text-primary-500"></i>
+          Configuration
+        </h2>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <label for="command" class="block font-medium">NPX Command</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                <i data-feather="command" class="w-4 h-4"></i>
+              </span>
+              <input type="text" id="command" placeholder="e.g., @smithery/cli serve" 
+                class="input pl-10" value="@smithery/cli serve">
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Enter the Smithery command to run with NPX</p>
+          </div>
+          
+          <div class="space-y-2">
+            <label for="port" class="block font-medium">Server Port</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                <i data-feather="hash" class="w-4 h-4"></i>
+              </span>
+              <input type="number" id="port" value="8000" class="input pl-10">
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">The port to expose the Smithery server on</p>
+          </div>
+          
+          <button id="run" class="btn btn-primary w-full flex items-center justify-center mt-4 group">
+            <i data-feather="play" class="w-4 h-4 mr-2 group-hover:animate-pulse"></i>
+            Run Smithery
+          </button>
+          
+          <div id="status" class="hidden mt-4 p-3 bg-gray-100 dark:bg-dark-700 rounded-lg text-sm">
+            <div class="flex items-center">
+              <div class="animate-pulse mr-2">
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              </div>
+              <span>Server running on port <span id="status-port">8000</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Console Output -->
+      <div class="lg:col-span-2 card p-6 animate-fade-in">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold flex items-center">
+            <i data-feather="terminal" class="w-5 h-5 mr-2 text-primary-500"></i>
+            Console Output
+          </h2>
+          <div class="flex space-x-2">
+            <button id="clear-output" class="p-2 text-sm rounded hover:bg-gray-200 dark:hover:bg-dark-700 flex items-center">
+              <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>
+              Clear
+            </button>
+            <button id="copy-output" class="p-2 text-sm rounded hover:bg-gray-200 dark:hover:bg-dark-700 flex items-center">
+              <i data-feather="copy" class="w-4 h-4 mr-1"></i>
+              Copy
+            </button>
+          </div>
+        </div>
+        <div id="output-container" class="relative h-[450px]">
+          <pre id="output" class="font-mono text-sm p-4 bg-dark-800 text-gray-200 rounded-lg h-full overflow-y-auto"></pre>
+          <div id="output-overlay" class="absolute inset-0 flex items-center justify-center bg-dark-800 bg-opacity-90 rounded-lg">
+            <div class="text-center">
+              <i data-feather="terminal" class="w-12 h-12 text-gray-500 mb-2 mx-auto"></i>
+              <p class="text-gray-400">Run a command to see output</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Server Info Panel -->
+    <div class="mt-6 card p-6 animate-fade-in hidden" id="server-info">
+      <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i data-feather="info" class="w-5 h-5 mr-2 text-primary-500"></i>
+        Server Information
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 bg-gray-100 dark:bg-dark-700 rounded-lg">
+          <div class="flex items-center">
+            <div class="p-2 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-lg mr-3">
+              <i data-feather="activity" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</h3>
+              <p class="font-semibold">Running</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-4 bg-gray-100 dark:bg-dark-700 rounded-lg">
+          <div class="flex items-center">
+            <div class="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg mr-3">
+              <i data-feather="globe" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">URL</h3>
+              <p class="font-semibold" id="server-url">http://localhost:8000</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-4 bg-gray-100 dark:bg-dark-700 rounded-lg">
+          <div class="flex items-center">
+            <div class="p-2 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-lg mr-3">
+              <i data-feather="clock" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Uptime</h3>
+              <p class="font-semibold" id="server-uptime">00:00:00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Feather icons
+      feather.replace();
+      
+      // Set up theme toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('dark-icon');
+      const lightIcon = document.getElementById('light-icon');
+      
+      // Check for saved theme preference or prefer-color-scheme
+      if (localStorage.theme === 'dark' || 
+         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        darkIcon.classList.add('hidden');
+        lightIcon.classList.remove('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+      }
+      
+      // Handle theme toggle
+      themeToggle.addEventListener('click', () => {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.theme = 'light';
+          lightIcon.classList.add('hidden');
+          darkIcon.classList.remove('hidden');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.theme = 'dark';
+          darkIcon.classList.add('hidden');
+          lightIcon.classList.remove('hidden');
+        }
+      });
+      
+      // Set up run button
+      const runButton = document.getElementById('run');
+      const commandInput = document.getElementById('command');
+      const portInput = document.getElementById('port');
+      const output = document.getElementById('output');
+      const outputOverlay = document.getElementById('output-overlay');
+      const statusElement = document.getElementById('status');
+      const statusPortElement = document.getElementById('status-port');
+      const serverInfo = document.getElementById('server-info');
+      const serverUrlElement = document.getElementById('server-url');
+      const serverUptimeElement = document.getElementById('server-uptime');
+      
+      let startTime;
+      let uptimeInterval;
+      
+      // Clear and copy buttons
+      document.getElementById('clear-output').addEventListener('click', () => {
+        output.textContent = '';
+      });
+      
+      document.getElementById('copy-output').addEventListener('click', () => {
+        navigator.clipboard.writeText(output.textContent)
+          .then(() => {
+            // Show a toast or some feedback
+            alert('Output copied to clipboard');
+          });
+      });
+      
+      // Update server uptime
+      function updateUptime() {
+        if (!startTime) return;
+        
+        const now = new Date();
+        const diff = now - startTime;
+        
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        
+        serverUptimeElement.textContent = 
+          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+      
+      runButton.addEventListener('click', async () => {
+        const command = commandInput.value;
+        const port = portInput.value;
+        
+        if (!command) {
+          alert('Please enter a command');
+          return;
+        }
+        
+        // Clear previous output and show loading
+        output.textContent = '';
+        outputOverlay.classList.add('hidden');
+        runButton.disabled = true;
+        runButton.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Running...';
+        
+        try {
+          const response = await fetch('/run-command', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ command, port })
+          });
+          
+          // Show server info
+          statusElement.classList.remove('hidden');
+          statusPortElement.textContent = port;
+          serverInfo.classList.remove('hidden');
+          serverUrlElement.textContent = `http://localhost:${port}`;
+          
+          // Reset and start uptime timer
+          clearInterval(uptimeInterval);
+          startTime = new Date();
+          uptimeInterval = setInterval(updateUptime, 1000);
+          
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            
+            const text = decoder.decode(value);
+            const events = text.split('\n\n');
+            
+            for (const event of events) {
+              if (event.startsWith('data: ')) {
+                const content = event.substring(6);
+                output.textContent += content + '\n';
+                output.scrollTop = output.scrollHeight;
+              }
+            }
+          }
+        } catch (error) {
+          output.textContent += `Error: ${error.message}\n`;
+        } finally {
+          runButton.disabled = false;
+          runButton.innerHTML = '<i data-feather="play" class="w-4 h-4 mr-2 group-hover:animate-pulse"></i> Run Smithery';
+          feather.replace();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
