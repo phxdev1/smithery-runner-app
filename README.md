@@ -2,6 +2,8 @@
 
 A modern UI for running Smithery on RunPod with Model Context Protocol support.
 
+![Smithery Runner](https://raw.githubusercontent.com/phxdev1/smithery-runner-app/main/screenshot.png)
+
 ## Features
 
 - Modern UI with Tailwind CSS
@@ -18,7 +20,7 @@ A modern UI for running Smithery on RunPod with Model Context Protocol support.
 This project is designed to be run on RunPod. To deploy it:
 
 1. Create a new pod on RunPod
-2. Use the Docker image: `phxdev1/smithery-runner:latest`
+2. Use the Docker image: `magickai/smithery-runner:latest`
 3. Expose the following ports:
    - Port 3000 (for the UI)
    - Port 8000 (for the Smithery server)
@@ -28,7 +30,7 @@ This project is designed to be run on RunPod. To deploy it:
 1. Log in to RunPod
 2. Click "Deploy"
 3. Select "Custom" template
-4. Set Docker Image to `phxdev1/smithery-runner:latest`
+4. Set Docker Image to `magickai/smithery-runner:latest`
 5. Add the following ports:
    - Container Port: 3000, Exposed Port: 3000 (for the UI)
    - Container Port: 8000, Exposed Port: 8000 (for the Smithery server)
@@ -69,10 +71,10 @@ npm run dev
 
 ```bash
 # Build the Docker image locally
-docker build -t smithery-runner .
+docker build -t magickai/smithery-runner .
 
 # Run the container
-docker run -p 3000:3000 -p 8000:8000 smithery-runner
+docker run -p 3000:3000 -p 8000:8000 magickai/smithery-runner
 ```
 
 ## GitHub Actions
